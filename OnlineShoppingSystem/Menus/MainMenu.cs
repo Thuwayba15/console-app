@@ -17,6 +17,7 @@ public class MainMenu
     private readonly IPaymentService _paymentService;
     private readonly IReviewService _reviewService;
     private readonly IReportService _reportService;
+    private readonly IPersistenceService _persistenceService;
 
     public MainMenu(
         IAuthService authService,
@@ -25,7 +26,8 @@ public class MainMenu
         IOrderService orderService,
         IPaymentService paymentService,
         IReviewService reviewService,
-        IReportService reportService)
+        IReportService reportService,
+        IPersistenceService persistenceService)
     {
         _authService = authService;
         _productService = productService;
@@ -34,6 +36,7 @@ public class MainMenu
         _paymentService = paymentService;
         _reviewService = reviewService;
         _reportService = reportService;
+        _persistenceService = persistenceService;
     }
 
     /// <summary>
@@ -187,8 +190,12 @@ public class MainMenu
                         _cartService,
                         _orderService,
                         _paymentService,
-                        _reviewService);
+                        _reviewService,
+                        _persistenceService);
                     customerMenu.Show();
+                    
+                    // Save data after logout
+                    _persistenceService.SaveData();
                 }
             }
             else if (user.Role == UserRole.Administrator)
@@ -202,6 +209,9 @@ public class MainMenu
                         _orderService,
                         _reportService);
                     adminMenu.Show();
+                    
+                    // Save data after logout
+                    _persistenceService.SaveData();
                 }
             }
         }

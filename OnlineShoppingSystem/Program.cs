@@ -31,6 +31,7 @@ class Program
             if (!AppDataStore.Instance.Users.Any())
             {
                 SeedData.Initialize();
+                AppDataStore.Instance.SyncCountersWithData();
                 Console.WriteLine("Initialized with seed data.");
             }
             else
@@ -42,6 +43,7 @@ class Program
         {
             // If loading fails (files don't exist yet), initialize with seed data
             SeedData.Initialize();
+            AppDataStore.Instance.SyncCountersWithData();
             Console.WriteLine("Initialized with seed data.");
         }
 

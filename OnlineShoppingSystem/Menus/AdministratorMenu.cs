@@ -1,4 +1,5 @@
 using OnlineShoppingSystem.Helpers;
+using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
 
 namespace OnlineShoppingSystem.Menus;
@@ -9,10 +10,20 @@ namespace OnlineShoppingSystem.Menus;
 public class AdministratorMenu
 {
     private readonly Administrator _admin;
+    private readonly IProductService _productService;
+    private readonly IOrderService _orderService;
+    private readonly IReportService _reportService;
 
-    public AdministratorMenu(Administrator admin)
+    public AdministratorMenu(
+        Administrator admin,
+        IProductService productService,
+        IOrderService orderService,
+        IReportService reportService)
     {
         _admin = admin;
+        _productService = productService;
+        _orderService = orderService;
+        _reportService = reportService;
     }
 
     /// <summary>

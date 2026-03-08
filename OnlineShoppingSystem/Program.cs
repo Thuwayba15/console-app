@@ -22,11 +22,38 @@ class Program
         IReportService reportService = new ReportService();
         IPersistenceService persistenceService = new PersistenceService();
 
-        // Initialize data with seed data
-        SeedData.Initialize();
+        // Load data from JSON files if they exist, otherwise initialize with seed data
+        try
+        {
+            persistenceService.LoadData();
+            
+            // If no data was loaded (empty JSON files or first run), initialize with seed data
+            if (!AppDataStore.Instance.Users.Any())
+            {
+                SeedData.Initialize();
+                Console.WriteLine("Initialized with seed data.");
+            }
+            else
+            {
+                Console.WriteLine("Loaded existing data from storage.");
+            }
+        }
+        catch
+        {
+            // If loading fails (files don't exist yet), initialize with seed data
+            SeedData.Initialize();
+            Console.WriteLine("Initialized with seed data.");
+        }
 
-        // Start the main menu
-        var mainMenu = new MainMenu(authService);
+        // Start the main menu with all necessary services
+        var mainMenu = new MainMenu(
+            authService,
+            productService,
+            cartService,
+            orderService,
+            paymentService,
+            reviewService,
+            reportService);
         mainMenu.Show();
 
         // Save data before exit

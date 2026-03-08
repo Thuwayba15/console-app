@@ -1,4 +1,5 @@
 using OnlineShoppingSystem.Helpers;
+using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
 
 namespace OnlineShoppingSystem.Menus;
@@ -9,10 +10,26 @@ namespace OnlineShoppingSystem.Menus;
 public class CustomerMenu
 {
     private readonly Customer _customer;
+    private readonly IProductService _productService;
+    private readonly ICartService _cartService;
+    private readonly IOrderService _orderService;
+    private readonly IPaymentService _paymentService;
+    private readonly IReviewService _reviewService;
 
-    public CustomerMenu(Customer customer)
+    public CustomerMenu(
+        Customer customer,
+        IProductService productService,
+        ICartService cartService,
+        IOrderService orderService,
+        IPaymentService paymentService,
+        IReviewService reviewService)
     {
         _customer = customer;
+        _productService = productService;
+        _cartService = cartService;
+        _orderService = orderService;
+        _paymentService = paymentService;
+        _reviewService = reviewService;
     }
 
     /// <summary>

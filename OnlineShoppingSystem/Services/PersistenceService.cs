@@ -36,7 +36,8 @@ public class PersistenceService : IPersistenceService
     {
         try
         {
-            SaveToFile("users.json", _dataStore.Users);
+            // Save users with proper type information preserved
+            SaveUsersWithTypes("users.json");
             SaveToFile("products.json", _dataStore.Products);
             SaveToFile("carts.json", _dataStore.Carts);
             SaveToFile("orders.json", _dataStore.Orders);
@@ -49,6 +50,36 @@ public class PersistenceService : IPersistenceService
         {
             Console.WriteLine($"Error saving data: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Save users while preserving Customer and Administrator specific properties
+    /// </summary>
+    private void SaveUsersWithTypes(string fileName)
+    {
+        var filePath = Path.Combine(_dataDirectory, fileName);
+        
+        // Serialize each user with their actual type (Customer or Administrator)
+        var usersJson = new List<object>();
+        
+        foreach (var user in _dataStore.Users)
+        {
+            if (user is Customer customer)
+            {
+                usersJson.Add(customer);
+            }
+            else if (user is Administrator admin)
+            {
+                usersJson.Add(admin);
+            }
+            else
+            {
+                usersJson.Add(user);
+            }
+        }
+        
+        var json = JsonSerializer.Serialize(usersJson, _jsonOptions);
+        File.WriteAllText(filePath, json);
     }
 
     public void LoadData()

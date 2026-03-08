@@ -15,6 +15,7 @@ public class CustomerMenu
     private readonly IOrderService _orderService;
     private readonly IPaymentService _paymentService;
     private readonly IReviewService _reviewService;
+    private readonly IPersistenceService _persistenceService;
 
     public CustomerMenu(
         Customer customer,
@@ -22,7 +23,8 @@ public class CustomerMenu
         ICartService cartService,
         IOrderService orderService,
         IPaymentService paymentService,
-        IReviewService reviewService)
+        IReviewService reviewService,
+        IPersistenceService persistenceService)
     {
         _customer = customer;
         _productService = productService;
@@ -30,6 +32,7 @@ public class CustomerMenu
         _orderService = orderService;
         _paymentService = paymentService;
         _reviewService = reviewService;
+        _persistenceService = persistenceService;
     }
 
     /// <summary>
@@ -379,12 +382,15 @@ public class CustomerMenu
             if (order != null)
             {
                 ConsoleHelper.DisplaySuccess($"Order #{order.Id} created successfully!");
-                ConsoleHelper.DisplayInfo($"Total: ${order.TotalAmount:F2}");
-                ConsoleHelper.DisplayInfo($"New Wallet Balance: ${_paymentService.GetWalletBalance(_customer.Id):F2}");
+                ConsoleHelper.DisplayInfo($"Total: R{order.TotalAmount:F2}");
+                ConsoleHelper.DisplayInfo($"New Wallet Balance: R{_paymentService.GetWalletBalance(_customer.Id):F2}");
                 ConsoleHelper.DisplayInfo($"Order Status: {order.Status}");
                 
                 // Update customer reference
                 _customer.WalletBalance = _paymentService.GetWalletBalance(_customer.Id);
+                
+                // Save data immediately to persist order and balance changes
+                _persistenceService.SaveData();
             }
             else
             {
@@ -413,7 +419,7 @@ public class CustomerMenu
         var balance = _paymentService.GetWalletBalance(_customer.Id);
         _customer.WalletBalance = balance;
 
-        Console.WriteLine($"\nCurrent Balance: ${balance:F2}");
+        Console.WriteLine($"\nCurrent Balance: R{balance:F2}");
         ConsoleHelper.PauseForUser();
     }
 
@@ -425,11 +431,11 @@ public class CustomerMenu
         ConsoleHelper.DisplayHeader("ADD WALLET FUNDS");
 
         var currentBalance = _paymentService.GetWalletBalance(_customer.Id);
-        Console.WriteLine($"Current Balance: ${currentBalance:F2}\n");
+        Console.WriteLine($"Current Balance: R{currentBalance:F2}\n");
 
         try
         {
-            var amount = InputHelper.ReadPositiveDecimal("Enter amount to add: $");
+            var amount = InputHelper.ReadPositiveDecimal("Enter amount to add: R");
 
             var success = _paymentService.AddFunds(_customer.Id, amount);
 
@@ -438,8 +444,11 @@ public class CustomerMenu
                 var newBalance = _paymentService.GetWalletBalance(_customer.Id);
                 _customer.WalletBalance = newBalance;
                 
-                ConsoleHelper.DisplaySuccess($"Added ${amount:F2} to your wallet.");
-                ConsoleHelper.DisplayInfo($"New Balance: ${newBalance:F2}");
+                // Save data immediately to persist wallet balance
+                _persistenceService.SaveData();
+                
+                ConsoleHelper.DisplaySuccess($"Added R{amount:F2} to your wallet.");
+                ConsoleHelper.DisplayInfo($"New Balance: R{newBalance:F2}");
             }
             else
             {

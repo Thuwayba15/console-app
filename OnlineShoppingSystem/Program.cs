@@ -53,7 +53,8 @@ class Program
             orderService,
             paymentService,
             reviewService,
-            reportService);
+            reportService,
+            persistenceService);
         mainMenu.Show();
 
         // Save data before exit

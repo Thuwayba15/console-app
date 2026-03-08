@@ -104,6 +104,9 @@ public class PersistenceService : IPersistenceService
 
         _dataStore.Reviews.Clear();
         _dataStore.Reviews.AddRange(LoadFromFile<Review>("reviews.json"));
+
+        // Sync ID counters with loaded data to prevent ID conflicts
+        _dataStore.SyncCountersWithData();
     }
 
     /// <summary>

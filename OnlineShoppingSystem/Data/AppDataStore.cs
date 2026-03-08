@@ -70,6 +70,19 @@ public class AppDataStore
     public int GetNextReviewId() => _nextReviewId++;
 
     /// <summary>
+    /// Update ID counters based on existing data (call after loading from persistence)
+    /// </summary>
+    public void SyncCountersWithData()
+    {
+        _nextUserId = Users.Any() ? Users.Max(u => u.Id) + 1 : 1;
+        _nextProductId = Products.Any() ? Products.Max(p => p.Id) + 1 : 1;
+        _nextCartId = Carts.Any() ? Carts.Max(c => c.Id) + 1 : 1;
+        _nextOrderId = Orders.Any() ? Orders.Max(o => o.Id) + 1 : 1;
+        _nextPaymentId = Payments.Any() ? Payments.Max(p => p.Id) + 1 : 1;
+        _nextReviewId = Reviews.Any() ? Reviews.Max(r => r.Id) + 1 : 1;
+    }
+
+    /// <summary>
     /// Reset all data and counters (useful for testing)
     /// </summary>
     public void Reset()

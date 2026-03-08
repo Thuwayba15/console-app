@@ -207,7 +207,8 @@ public class MainMenu
                         admin,
                         _productService,
                         _orderService,
-                        _reportService);
+                        _reportService,
+                        _persistenceService);
                     adminMenu.Show();
                     
                     // Save data after logout

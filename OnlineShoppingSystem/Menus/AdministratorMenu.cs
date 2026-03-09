@@ -45,15 +45,16 @@ public class AdministratorMenu
         // Command Pattern: Register all administrative commands
         _commands = new Dictionary<int, ICommand>
         {
-            { 1, new AddProductCommand(productService, persistenceService) },
-            { 2, new UpdateProductCommand(productService, persistenceService) },
-            { 3, new DeleteProductCommand(productService, persistenceService) },
-            { 4, new RestockProductCommand(productService, persistenceService) },
-            { 5, new ViewProductsCommand(productService) },
-            { 6, new ViewOrdersCommand(orderService) },
-            { 7, new UpdateOrderStatusCommand(orderService, persistenceService) },
-            { 8, new ViewLowStockCommand(productService) },
-            { 9, new GenerateReportsCommand(orderService, productService) }
+            { 1, new ViewDashboardCommand(productService, orderService) },
+            { 2, new AddProductCommand(productService, persistenceService) },
+            { 3, new UpdateProductCommand(productService, persistenceService) },
+            { 4, new DeleteProductCommand(productService, persistenceService) },
+            { 5, new RestockProductCommand(productService, persistenceService) },
+            { 6, new ViewProductsCommand(productService) },
+            { 7, new ViewOrdersCommand(orderService) },
+            { 8, new UpdateOrderStatusCommand(orderService, persistenceService) },
+            { 9, new ViewLowStockCommand(productService) },
+            { 10, new GenerateReportsCommand(orderService, productService) }
         };
     }
 
@@ -66,20 +67,73 @@ public class AdministratorMenu
         while (true)
         {
             ConsoleHelper.DisplayHeader($"ADMINISTRATOR MENU - Welcome, {_admin.Username}!");
-            Console.WriteLine("1. Add Product");
-            Console.WriteLine("2. Update Product");
-            Console.WriteLine("3. Delete Product");
-            Console.WriteLine("4. Restock Product");
-            Console.WriteLine("5. View Products");
-            Console.WriteLine("6. View Orders");
-            Console.WriteLine("7. Update Order Status");
-            Console.WriteLine("8. View Low Stock Products");
-            Console.WriteLine("9. Generate Sales Reports");
-            Console.WriteLine("10. Logout");
+            
+            // Dashboard
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("1. ");
+            Console.ResetColor();
+            Console.WriteLine("View Dashboard");
+            
+            // Product Management Section
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("\n[PRODUCT MANAGEMENT]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("2. ");
+            Console.ResetColor();
+            Console.WriteLine("Add Product");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("3. ");
+            Console.ResetColor();
+            Console.WriteLine("Update Product");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("4. ");
+            Console.ResetColor();
+            Console.WriteLine("Delete Product");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("5. ");
+            Console.ResetColor();
+            Console.WriteLine("Restock Product");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("6. ");
+            Console.ResetColor();
+            Console.WriteLine("View Products");
+            
+            // Order Management Section
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("\n[ORDER MANAGEMENT]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("7. ");
+            Console.ResetColor();
+            Console.WriteLine("View Orders");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("8. ");
+            Console.ResetColor();
+            Console.WriteLine("Update Order Status");
+            
+            // Inventory & Reports
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n[INVENTORY & REPORTS]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("9. ");
+            Console.ResetColor();
+            Console.WriteLine("View Low Stock Products");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("10. ");
+            Console.ResetColor();
+            Console.WriteLine("Generate Sales Reports");
+            
+            // Logout
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("\n11. ");
+            Console.ResetColor();
+            Console.WriteLine("Logout");
 
-            var choice = InputHelper.ReadMenuChoice(1, 10);
+            var choice = InputHelper.ReadMenuChoice(1, 11);
 
-            if (choice == 10)
+            if (choice == 11)
             {
                 ConsoleHelper.DisplaySuccess("Logged out successfully.");
                 ConsoleHelper.PauseForUser();

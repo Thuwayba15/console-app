@@ -152,27 +152,27 @@ The application follows a **layered console architecture** to separate responsib
 
 ```
 Program
-   ?
-   ??? Menus
-   ?      Handles console interaction
-   ?
-   ??? Services
-   ?      Business logic
-   ?
-   ??? Models
-   ?      Core domain entities
-   ?
-   ??? Interfaces
-   ?      Contracts for services
-   ?
-   ??? Data
-   ?      Persistence and seed data
-   ?
-   ??? Helpers
-   ?      Utility functions
-   ?
-   ??? Enums
-          Application constants
+|
+|-- Menus
+|     Handles console interaction
+|
+|-- Services
+|     Business logic
+|
+|-- Models
+|     Core domain entities
+|
+|-- Interfaces
+|     Contracts for services
+|
+|-- Data
+|     Persistence and seed data
+|
+|-- Helpers
+|     Utility functions
+|
+|-- Enums
+      Application constants
 ```
 
 ---
@@ -295,87 +295,81 @@ Code is organized to ensure maintainability and clarity.
 
 ```
 OnlineShoppingSystem/
-??? Program.cs                              # Entry point, service initialization
-?
-??? Models/                                 # Domain entities (10 files)
-?   ??? User.cs
-?   ??? Customer.cs
-?   ??? Administrator.cs
-?   ??? Product.cs
-?   ??? Cart.cs
-?   ??? CartItem.cs
-?   ??? Order.cs
-?   ??? OrderItem.cs
-?   ??? Payment.cs
-?   ??? Review.cs
-?
-??? Enums/                                  # Type definitions (2 files)
-?   ??? UserRole.cs
-?   ??? OrderStatus.cs
-?
-??? Interfaces/                             # Service contracts (8 files)
-?   ??? IAuthService.cs
-?   ??? IProductService.cs
-?   ??? ICartService.cs
-?   ??? IOrderService.cs
-?   ??? IPaymentService.cs
-?   ??? IReviewService.cs
-?   ??? IReportService.cs
-?   ??? IPersistenceService.cs
-?
-??? Services/                               # Business logic (8 files)
-?   ??? AuthService.cs
-?   ??? ProductService.cs
-?   ??? CartService.cs
-?   ??? OrderService.cs
-?   ??? PaymentService.cs
-?   ??? ReviewService.cs
-?   ??? ReportService.cs
-?   ??? PersistenceService.cs
-?
-??? Menus/                                  # User interface (3 files)
-?   ??? MainMenu.cs
-?   ??? CustomerMenu.cs
-?   ??? AdministratorMenu.cs
-?
-??? Helpers/                                # Utilities (6 files)
-?   ??? ConsoleHelper.cs
-?   ??? InputHelper.cs
-?   ??? ValidationHelper.cs
-?   ??? ProductDisplayHelper.cs
-?   ??? OrderDisplayHelper.cs
-?   ??? ReportDisplayHelper.cs
-?
-??? Data/                                   # Data management (2 files)
-?   ??? AppDataStore.cs
-?   ??? SeedData.cs
-?
-??? bin/Debug/net10.0/Data/Storage/         # JSON persistence (6 files)
-?   ??? users.json
-?   ??? products.json
-?   ??? carts.json
-?   ??? orders.json
-?   ??? payments.json
-?   ??? reviews.json
-?
-??? Documentation/                          # Project documentation
-?   ??? PROJECT-FILE-STRUCTURE.md
-?   ??? SUBMISSION-COMPLETE.md
-?   ??? ADMIN-FEATURES-COMPLETE.md
-?   ??? ADMIN-REFACTORING-COMPLETE.md
-?   ??? TESTING-ADMIN-FEATURES.md
-?   ??? WALLET-PERSISTENCE-FIX.md
-?   ??? WALLET-PERSISTENCE-FINAL-FIX.md
-?   ??? WALLET-SERIALIZATION-FIX.md
-?   ??? FIX-PRODUCT-ID-CONFLICT.md
-?
-??? OnlineShoppingSystem.csproj             # Project configuration
+|
+|-- Program.cs                              # Entry point, service initialization
+|
+|-- Models/                                 # Domain entities
+|   |-- User.cs
+|   |-- Customer.cs
+|   |-- Administrator.cs
+|   |-- Product.cs
+|   |-- Cart.cs
+|   |-- CartItem.cs
+|   |-- Order.cs
+|   |-- OrderItem.cs
+|   |-- Payment.cs
+|   |-- Review.cs
+|
+|-- Enums/
+|   |-- UserRole.cs
+|   |-- OrderStatus.cs
+|
+|-- Interfaces/
+|   |-- IAuthService.cs
+|   |-- IProductService.cs
+|   |-- ICartService.cs
+|   |-- IOrderService.cs
+|   |-- IPaymentService.cs
+|   |-- IReviewService.cs
+|   |-- IReportService.cs
+|   |-- IPersistenceService.cs
+|
+|-- Services/
+|   |-- AuthService.cs
+|   |-- ProductService.cs
+|   |-- CartService.cs
+|   |-- OrderService.cs
+|   |-- PaymentService.cs
+|   |-- ReviewService.cs
+|   |-- ReportService.cs
+|   |-- PersistenceService.cs
+|
+|-- Menus/
+|   |-- MainMenu.cs
+|   |-- CustomerMenu.cs
+|   |-- AdministratorMenu.cs
+|
+|-- Helpers/
+|   |-- ConsoleHelper.cs
+|   |-- InputHelper.cs
+|   |-- ValidationHelper.cs
+|   |-- ProductDisplayHelper.cs
+|   |-- OrderDisplayHelper.cs
+|   |-- ReportDisplayHelper.cs
+|
+|-- Data/
+|   |-- AppDataStore.cs
+|   |-- SeedData.cs
+|
+|-- Storage/                                # JSON persistence files
+|   |-- users.json
+|   |-- products.json
+|   |-- carts.json
+|   |-- orders.json
+|   |-- payments.json
+|   |-- reviews.json
+|
+|-- Documentation/
+|   |-- PROJECT-FILE-STRUCTURE.md
+|   |-- SUBMISSION-COMPLETE.md
+|   |-- ADMIN-FEATURES-COMPLETE.md
+|   |-- ADMIN-REFACTORING-COMPLETE.md
+|   |-- TESTING-ADMIN-FEATURES.md
+|   |-- WALLET-PERSISTENCE-FIX.md
+|   |-- WALLET-PERSISTENCE-FINAL-FIX.md
+|   |-- WALLET-SERIALIZATION-FIX.md
+|   |-- FIX-PRODUCT-ID-CONFLICT.md
+|
+|-- OnlineShoppingSystem.csproj
 ```
-
-**Total:** 39 source files organized in clean architecture
-
 ---
-
-# Author
-
-Developed as part of a **C# backend systems assignment**, demonstrating object-oriented design, LINQ usage, and console application architecture.

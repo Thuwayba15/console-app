@@ -2,6 +2,8 @@ using OnlineShoppingSystem.Enums;
 using OnlineShoppingSystem.Helpers;
 using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
+using OnlineShoppingSystem.Services;
+using OnlineShoppingSystem.Strategies;
 
 namespace OnlineShoppingSystem.Menus;
 
@@ -491,7 +493,7 @@ public class AdministratorMenu
     #region Reports
 
     /// <summary>
-    /// Generate and display sales reports
+    /// Generate and display sales reports using Strategy Pattern
     /// </summary>
     private void GenerateSalesReports()
     {
@@ -507,19 +509,30 @@ public class AdministratorMenu
 
             var choice = InputHelper.ReadMenuChoice(1, 4);
 
+            // Strategy Pattern: Select the appropriate report strategy based on user choice
+            IReportStrategy? strategy = null;
+            var generator = new ReportGenerator();
+
             switch (choice)
             {
                 case 1:
-                    DisplaySalesSummary();
+                    strategy = new SalesSummaryStrategy(_orderService);
                     break;
                 case 2:
-                    DisplayTopProducts();
+                    var limit = InputHelper.ReadPositiveInt("Enter number of top products to display: ");
+                    strategy = new TopProductsStrategy(_orderService, limit);
                     break;
                 case 3:
-                    DisplaySalesByCategory();
+                    strategy = new SalesByCategoryStrategy(_orderService, _productService);
                     break;
                 case 4:
                     return;
+            }
+
+            // Execute the selected strategy
+            if (strategy != null)
+            {
+                generator.Generate(strategy);
             }
         }
         catch (Exception ex)
@@ -697,29 +710,6 @@ public class AdministratorMenu
             5 => OrderStatus.Cancelled,
             _ => OrderStatus.Pending
         };
-    }
-
-    private void DisplaySalesSummary()
-    {
-        ConsoleHelper.DisplayHeader("SALES SUMMARY");
-        var orders = _orderService.GetAllOrders();
-        ReportDisplayHelper.DisplaySalesSummary(orders);
-    }
-
-    private void DisplayTopProducts()
-    {
-        ConsoleHelper.DisplayHeader("TOP SELLING PRODUCTS");
-        var limit = InputHelper.ReadPositiveInt("Enter number of top products to display: ");
-        var orders = _orderService.GetAllOrders();
-        ReportDisplayHelper.DisplayTopProducts(orders, limit);
-    }
-
-    private void DisplaySalesByCategory()
-    {
-        ConsoleHelper.DisplayHeader("SALES BY CATEGORY");
-        var orders = _orderService.GetAllOrders();
-        var products = _productService.GetAllProducts();
-        ReportDisplayHelper.DisplaySalesByCategory(orders, products);
     }
 
     #endregion

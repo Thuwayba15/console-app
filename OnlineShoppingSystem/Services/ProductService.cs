@@ -1,11 +1,13 @@
 using OnlineShoppingSystem.Data;
 using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
+using OnlineShoppingSystem.Validators;
 
 namespace OnlineShoppingSystem.Services;
 
 /// <summary>
 /// Service for managing products
+/// Uses ProductValidator for consistent validation
 /// </summary>
 public class ProductService : IProductService
 {
@@ -42,44 +44,11 @@ public class ProductService : IProductService
 
     public Product AddProduct(string name, string description, decimal price, int stockQuantity, string category)
     {
-        if (string.IsNullOrWhiteSpace(name))
+        // Use ProductValidator for consistent validation
+        var validation = ProductValidator.ValidateProduct(name, description, price, category, stockQuantity);
+        if (!validation.IsValid)
         {
-            throw new ArgumentException("Product name is required.");
-        }
-
-        if (name.Length > 100)
-        {
-            throw new ArgumentException("Product name cannot exceed 100 characters.");
-        }
-
-        if (description != null && description.Length > 500)
-        {
-            throw new ArgumentException("Description cannot exceed 500 characters.");
-        }
-
-        if (price <= 0)
-        {
-            throw new ArgumentException("Price must be greater than zero.");
-        }
-
-        if (price > 1000000)
-        {
-            throw new ArgumentException("Price cannot exceed R1,000,000.");
-        }
-
-        if (stockQuantity < 0)
-        {
-            throw new ArgumentException("Stock quantity cannot be negative.");
-        }
-
-        if (stockQuantity > 1000000)
-        {
-            throw new ArgumentException("Stock quantity cannot exceed 1,000,000 units.");
-        }
-
-        if (category != null && category.Length > 50)
-        {
-            throw new ArgumentException("Category name cannot exceed 50 characters.");
+            throw new ArgumentException(validation.ErrorMessage);
         }
 
         var product = new Product
@@ -104,44 +73,11 @@ public class ProductService : IProductService
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(name))
+        // Use ProductValidator for consistent validation
+        var validation = ProductValidator.ValidateProduct(name, description, price, category, stockQuantity);
+        if (!validation.IsValid)
         {
-            throw new ArgumentException("Product name is required.");
-        }
-
-        if (name.Length > 100)
-        {
-            throw new ArgumentException("Product name cannot exceed 100 characters.");
-        }
-
-        if (description != null && description.Length > 500)
-        {
-            throw new ArgumentException("Description cannot exceed 500 characters.");
-        }
-
-        if (price <= 0)
-        {
-            throw new ArgumentException("Price must be greater than zero.");
-        }
-
-        if (price > 1000000)
-        {
-            throw new ArgumentException("Price cannot exceed R1,000,000.");
-        }
-
-        if (stockQuantity < 0)
-        {
-            throw new ArgumentException("Stock quantity cannot be negative.");
-        }
-
-        if (stockQuantity > 1000000)
-        {
-            throw new ArgumentException("Stock quantity cannot exceed 1,000,000 units.");
-        }
-
-        if (category != null && category.Length > 50)
-        {
-            throw new ArgumentException("Category name cannot exceed 50 characters.");
+            throw new ArgumentException(validation.ErrorMessage);
         }
 
         product.Name = name.Trim();

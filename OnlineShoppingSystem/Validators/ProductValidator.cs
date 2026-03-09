@@ -30,8 +30,9 @@ public static class ProductValidator
     /// </summary>
     public static (bool IsValid, string ErrorMessage) ValidateDescription(string description)
     {
+        // Description can be empty (unlike name), but if provided, must be valid
         if (string.IsNullOrWhiteSpace(description))
-            return (false, "Product description is required.");
+            return (true, string.Empty); // Description is optional
 
         if (description.Length > ValidationConstants.MaxDescriptionLength)
             return (false, ValidationConstants.DescriptionTooLong);
@@ -61,8 +62,9 @@ public static class ProductValidator
     /// </summary>
     public static (bool IsValid, string ErrorMessage) ValidateCategory(string category)
     {
+        // Category can be empty (optional)
         if (string.IsNullOrWhiteSpace(category))
-            return (false, "Product category is required.");
+            return (true, string.Empty); // Category is optional
 
         if (category.Length > ValidationConstants.MaxCategoryLength)
             return (false, ValidationConstants.CategoryTooLong);

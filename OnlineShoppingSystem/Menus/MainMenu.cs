@@ -86,6 +86,20 @@ public class MainMenu
 
             // Get username
             string username = InputHelper.ReadNonEmptyString("Enter username: ");
+            
+            if (username.Length > ValidationConstants.MaxUsernameLength)
+            {
+                ConsoleHelper.DisplayError($"Username cannot exceed {ValidationConstants.MaxUsernameLength} characters.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+
+            if (ValidationHelper.ContainsDangerousContent(username))
+            {
+                ConsoleHelper.DisplayError("Username contains invalid characters or patterns.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
 
             // Check if username already exists
             if (_authService.UsernameExists(username))
@@ -97,6 +111,13 @@ public class MainMenu
 
             // Get email
             string email = InputHelper.ReadNonEmptyString("Enter email: ");
+            
+            if (email.Length > ValidationConstants.MaxEmailLength)
+            {
+                ConsoleHelper.DisplayError($"Email cannot exceed {ValidationConstants.MaxEmailLength} characters.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
 
             // Validate email format
             if (!ValidationHelper.IsValidEmail(email))
@@ -116,6 +137,20 @@ public class MainMenu
 
             // Get password
             string password = InputHelper.ReadNonEmptyString("Enter password: ");
+            
+            if (password.Length < ValidationConstants.MinPasswordLength)
+            {
+                ConsoleHelper.DisplayError(ValidationConstants.PasswordTooShort);
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+            
+            if (password.Length > ValidationConstants.MaxPasswordLength)
+            {
+                ConsoleHelper.DisplayError(ValidationConstants.PasswordTooLong);
+                ConsoleHelper.PauseForUser();
+                return;
+            }
 
             // Confirm password
             string confirmPassword = InputHelper.ReadNonEmptyString("Confirm password: ");
@@ -161,9 +196,23 @@ public class MainMenu
         {
             // Get username
             string username = InputHelper.ReadNonEmptyString("Enter username: ");
+            
+            if (username.Length > ValidationConstants.MaxUsernameLength)
+            {
+                ConsoleHelper.DisplayError($"Username cannot exceed {ValidationConstants.MaxUsernameLength} characters.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
 
             // Get password
             string password = InputHelper.ReadNonEmptyString("Enter password: ");
+            
+            if (password.Length > ValidationConstants.MaxPasswordLength)
+            {
+                ConsoleHelper.DisplayError(ValidationConstants.PasswordTooLong);
+                ConsoleHelper.PauseForUser();
+                return;
+            }
 
             // Attempt login
             var user = _authService.Login(username, password);

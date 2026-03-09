@@ -100,10 +100,65 @@ public class AdministratorMenu
         try
         {
             var name = InputHelper.ReadNonEmptyString("Enter product name: ");
+            if (name.Length > 100)
+            {
+                ConsoleHelper.DisplayError("Product name cannot exceed 100 characters.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+
+            if (ValidationHelper.ContainsDangerousContent(name))
+            {
+                ConsoleHelper.DisplayError("Product name contains invalid characters or patterns.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+            
             var description = InputHelper.ReadNonEmptyString("Enter product description: ");
+            if (description.Length > 500)
+            {
+                ConsoleHelper.DisplayError("Description cannot exceed 500 characters.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+
+            if (ValidationHelper.ContainsDangerousContent(description))
+            {
+                ConsoleHelper.DisplayError("Description contains invalid characters or patterns.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+            
             var price = InputHelper.ReadPositiveDecimal("Enter product price: R");
+            if (price > 1000000)
+            {
+                ConsoleHelper.DisplayError("Price cannot exceed R1,000,000.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+            
             var stockQuantity = InputHelper.ReadPositiveInt("Enter initial stock quantity: ");
+            if (stockQuantity > 1000000)
+            {
+                ConsoleHelper.DisplayError("Stock quantity cannot exceed 1,000,000 units.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+            
             var category = InputHelper.ReadNonEmptyString("Enter product category: ");
+            if (category.Length > 50)
+            {
+                ConsoleHelper.DisplayError("Category name cannot exceed 50 characters.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
+
+            if (ValidationHelper.ContainsDangerousContent(category))
+            {
+                ConsoleHelper.DisplayError("Category name contains invalid characters or patterns.");
+                ConsoleHelper.PauseForUser();
+                return;
+            }
 
             var product = _productService.AddProduct(name, description, price, stockQuantity, category);
 
@@ -340,7 +395,7 @@ public class AdministratorMenu
             return;
         }
 
-        ConsoleHelper.DisplayWarning($"Found {lowStockProducts.Count} product(s) with low stock (?10 units):");
+        ConsoleHelper.DisplayWarning($"Found {lowStockProducts.Count} product(s) with low stock (<= 10 units):");
         ProductDisplayHelper.DisplayProductTable(lowStockProducts);
         ConsoleHelper.PauseForUser();
     }
@@ -492,16 +547,76 @@ public class AdministratorMenu
     private (string Name, string Description, decimal Price, string Category) GetUpdatedProductDetails(Product product)
     {
         var newName = InputHelper.ReadString($"Name [{product.Name}]: ");
-        if (string.IsNullOrWhiteSpace(newName)) newName = product.Name;
+        if (string.IsNullOrWhiteSpace(newName)) 
+            newName = product.Name;
+        else if (newName.Length > 100)
+        {
+            ConsoleHelper.DisplayError("Product name cannot exceed 100 characters.");
+            return (product.Name, product.Description, product.Price, product.Category);
+        }
+        else if (ValidationHelper.ContainsDangerousContent(newName))
+        {
+            ConsoleHelper.DisplayError("Product name contains invalid characters or patterns.");
+            return (product.Name, product.Description, product.Price, product.Category);
+        }
 
         var newDescription = InputHelper.ReadString($"Description [{product.Description}]: ");
-        if (string.IsNullOrWhiteSpace(newDescription)) newDescription = product.Description;
+        if (string.IsNullOrWhiteSpace(newDescription)) 
+            newDescription = product.Description;
+        else if (newDescription.Length > 500)
+        {
+            ConsoleHelper.DisplayError("Description cannot exceed 500 characters.");
+            return (product.Name, product.Description, product.Price, product.Category);
+        }
+        else if (ValidationHelper.ContainsDangerousContent(newDescription))
+        {
+            ConsoleHelper.DisplayError("Description contains invalid characters or patterns.");
+            return (product.Name, product.Description, product.Price, product.Category);
+        }
 
         var priceInput = InputHelper.ReadString($"Price [R{product.Price:F2}]: ");
-        var newPrice = string.IsNullOrWhiteSpace(priceInput) ? product.Price : decimal.Parse(priceInput);
+        decimal newPrice;
+        
+        if (string.IsNullOrWhiteSpace(priceInput))
+        {
+            newPrice = product.Price;
+        }
+        else
+        {
+            if (!decimal.TryParse(priceInput, out newPrice))
+            {
+                ConsoleHelper.DisplayError("Invalid price format. Price must be a valid number.");
+                return (product.Name, product.Description, product.Price, product.Category);
+            }
+            
+            if (newPrice <= 0)
+            {
+                ConsoleHelper.DisplayError("Price must be greater than zero.");
+                return (product.Name, product.Description, product.Price, product.Category);
+            }
+            
+            if (newPrice > 1000000)
+            {
+                ConsoleHelper.DisplayError("Price cannot exceed R1,000,000.");
+                return (product.Name, product.Description, product.Price, product.Category);
+            }
+        }
 
         var categoryInput = InputHelper.ReadString($"Category [{product.Category}]: ");
-        var newCategory = string.IsNullOrWhiteSpace(categoryInput) ? product.Category : categoryInput;
+        if (string.IsNullOrWhiteSpace(categoryInput)) 
+            categoryInput = product.Category;
+        else if (categoryInput.Length > 50)
+        {
+            ConsoleHelper.DisplayError("Category name cannot exceed 50 characters.");
+            return (product.Name, product.Description, product.Price, product.Category);
+        }
+        else if (ValidationHelper.ContainsDangerousContent(categoryInput))
+        {
+            ConsoleHelper.DisplayError("Category name contains invalid characters or patterns.");
+            return (product.Name, product.Description, product.Price, product.Category);
+        }
+        
+        var newCategory = categoryInput;
 
         return (newName, newDescription, newPrice, newCategory);
     }

@@ -178,198 +178,102 @@ Program
 ---
 
 ## Domain Model
+The project uses a domain-first model around users, catalog, cart, orders, payments, and reviews.
 
-Key entities in the system include:
+![Domain model class diagram](class-diagram/domain-model.png)
 
-- User
-- Customer
-- Administrator
-- Product
-- Cart
-- CartItem
-- Order
-- OrderItem
-- Payment
-- Review
+## Design Choices
+Key design decisions:
 
-These models represent the core business objects used by the system.
+- Layered structure: menus (presentation), services (business logic), models/enums (domain), data/persistence (storage)
+- Interface-driven services: contracts in `OnlineShoppingSystem/Interfaces` with implementations in `OnlineShoppingSystem/Services`
+- Explicit role flow: customer and admin actions are separated to keep each path focused and safer
+- JSON persistence: simple and portable storage for a console project (`users`, `products`, `carts`, `orders`, `payments`, `reviews`)
+- Seed initialization: app can start with usable sample data via `SeedData` when storage is empty
 
----
+Why this works well for this project:
 
-# Running the Application
+- Keeps business rules testable without UI coupling
+- Keeps features extensible (new commands, reports, validations)
+- Avoids over-engineering while still demonstrating strong architecture
 
-## Requirements
+## Advanced Features: Admin Dashboard
+The admin dashboard (`ViewDashboardCommand`) provides operational and business insight in one screen.
 
-Before running the application ensure you have:
+It includes:
 
-- **.NET 8 or later**
-- **Visual Studio 2022 / Visual Studio 2025**
-- or the **.NET CLI**
+- User stats: total customers, administrators, and users
+- Inventory health: total products, low-stock count, out-of-stock warnings
+- Order pipeline: pending, processing, delivered counts
+- Financial metrics: revenue, units sold, average order value
+- Recent activity: latest orders with status highlighting
+- Alerts section: low stock, out-of-stock, and pending-order alerts
+- Top products: ranked by revenue from completed/non-cancelled sales
 
----
+This gives an admin a quick "state of the store" snapshot without navigating multiple menus.
 
-## Running in Visual Studio
+## Design Patterns Used
+The implementation uses practical patterns that match the problem:
 
-1. Open the solution in Visual Studio.
-2. Set **OnlineShoppingSystem** as the startup project.
-3. Build the project.
-4. Run the application using:
+- `Factory Pattern`
+- `UserFactory`: creates `Customer` or `Administrator` based on role
+- `MenuFactory`: routes authenticated users to the correct menu flow
 
+- `Command Pattern`
+- Menu actions are encapsulated in command classes implementing `ICommand`
+- `CustomerMenu` and `AdministratorMenu` act as invokers, reducing large switch/if menu blocks
+
+- `Strategy Pattern`
+- Reporting uses `IReportStrategy` with concrete strategies like `SalesSummaryStrategy`, `TopProductsStrategy`, and `SalesByCategoryStrategy`
+- `ReportGenerator` executes selected strategies at runtime
+
+- `Singleton Pattern`
+- `AppDataStore` provides a shared in-memory data source and ID sequencing across services
+
+## Testing
+Unit tests are included in `OnlineShoppingSystem.Tests` using `xUnit`.
+
+Current tested areas include:
+
+- Factories (`UserFactory`)
+- Validators (`ProductValidator`)
+- Strategies (report strategies)
+- Data store (`AppDataStore` singleton behavior)
+- Services (`ProductService` business logic)
+
+Run tests from the repository root:
+
+```bash
+dotnet test
 ```
-F5
+## Running the Application
+Requirements:
+
+- .NET 8+
+- Visual Studio 
+
+Navigate to OnlineShoppingSystem:
+
+```bash
+dotnet run 
 ```
 
-or
+## Repository Structure
 
-```
-Ctrl + F5
-```
-
-The console application will start and display the main menu.
-
----
-
-## Running using the .NET CLI
-
-Navigate to the project folder and run:
-
-```
-dotnet run
-```
-
----
-
-## Example Workflow
-
-### Customer Flow
-
-1. Register a new user
-2. Login as customer
-3. Browse products
-4. Add products to cart
-5. Add funds to wallet
-6. Checkout
-7. View order history
-
-### Administrator Flow
-
-1. Login as administrator
-2. Add or update products
-3. Restock inventory
-4. View orders
-5. Generate reports
-
----
-
-# Data Persistence
-
-The system uses **JSON file persistence** instead of a database.
-
-Data stored includes:
-
-- Users
-- Products
-- Orders
-- Reviews
-
-This allows the system to persist data between application runs while keeping the implementation simple.
-
----
-
-# Development Principles
-
-The project follows clean code practices including:
-
-- Short, readable methods
-- Single Responsibility Principle
-- Meaningful variable and method naming
-- Guard clauses for validation
-- DRY (Don't Repeat Yourself)
-- KISS (Keep It Simple)
-
-Code is organized to ensure maintainability and clarity.
-
----
-
-# Project Structure
-
-```
+```text
 OnlineShoppingSystem/
-|
-|-- Program.cs                              # Entry point, service initialization
-|
-|-- Models/                                 # Domain entities
-|   |-- User.cs
-|   |-- Customer.cs
-|   |-- Administrator.cs
-|   |-- Product.cs
-|   |-- Cart.cs
-|   |-- CartItem.cs
-|   |-- Order.cs
-|   |-- OrderItem.cs
-|   |-- Payment.cs
-|   |-- Review.cs
-|
-|-- Enums/
-|   |-- UserRole.cs
-|   |-- OrderStatus.cs
-|
-|-- Interfaces/
-|   |-- IAuthService.cs
-|   |-- IProductService.cs
-|   |-- ICartService.cs
-|   |-- IOrderService.cs
-|   |-- IPaymentService.cs
-|   |-- IReviewService.cs
-|   |-- IReportService.cs
-|   |-- IPersistenceService.cs
-|
-|-- Services/
-|   |-- AuthService.cs
-|   |-- ProductService.cs
-|   |-- CartService.cs
-|   |-- OrderService.cs
-|   |-- PaymentService.cs
-|   |-- ReviewService.cs
-|   |-- ReportService.cs
-|   |-- PersistenceService.cs
-|
-|-- Menus/
-|   |-- MainMenu.cs
-|   |-- CustomerMenu.cs
-|   |-- AdministratorMenu.cs
-|
-|-- Helpers/
-|   |-- ConsoleHelper.cs
-|   |-- InputHelper.cs
-|   |-- ValidationHelper.cs
-|   |-- ProductDisplayHelper.cs
-|   |-- OrderDisplayHelper.cs
-|   |-- ReportDisplayHelper.cs
-|
-|-- Data/
-|   |-- AppDataStore.cs
-|   |-- SeedData.cs
-|
-|-- Storage/                                # JSON persistence files
-|   |-- users.json
-|   |-- products.json
-|   |-- carts.json
-|   |-- orders.json
-|   |-- payments.json
-|   |-- reviews.json
-|
-|-- Documentation/
-|   |-- PROJECT-FILE-STRUCTURE.md
-|   |-- SUBMISSION-COMPLETE.md
-|   |-- ADMIN-FEATURES-COMPLETE.md
-|   |-- ADMIN-REFACTORING-COMPLETE.md
-|   |-- TESTING-ADMIN-FEATURES.md
-|   |-- WALLET-PERSISTENCE-FIX.md
-|   |-- WALLET-PERSISTENCE-FINAL-FIX.md
-|   |-- WALLET-SERIALIZATION-FIX.md
-|   |-- FIX-PRODUCT-ID-CONFLICT.md
-|
-|-- OnlineShoppingSystem.csproj
+      Commands/
+      Configuration/
+      Data/
+      Enums/
+      Factories/
+      Helpers/
+      Interfaces/
+      Menus/
+      Models/
+      Services/
+      Strategies/
+      Validators/
+
+OnlineShoppingSystem.Tests/
 ```
----

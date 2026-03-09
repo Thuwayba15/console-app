@@ -1,4 +1,5 @@
 using OnlineShoppingSystem.Data;
+using OnlineShoppingSystem.Helpers;
 using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
 using OnlineShoppingSystem.Enums;
@@ -24,6 +25,36 @@ public class AuthService : IAuthService
             throw new ArgumentException("Username, email, and password are required.");
         }
 
+        if (username.Length > ValidationConstants.MaxUsernameLength)
+        {
+            throw new ArgumentException($"Username cannot exceed {ValidationConstants.MaxUsernameLength} characters.");
+        }
+
+        if (email.Length > ValidationConstants.MaxEmailLength)
+        {
+            throw new ArgumentException($"Email cannot exceed {ValidationConstants.MaxEmailLength} characters.");
+        }
+
+        if (password.Length < 6)
+        {
+            throw new ArgumentException("Password must be at least 6 characters long.");
+        }
+
+        if (password.Length > 100)
+        {
+            throw new ArgumentException("Password cannot exceed 100 characters.");
+        }
+
+        if (!ValidationHelper.IsValidEmail(email))
+        {
+            throw new ArgumentException("Invalid email format.");
+        }
+
+        if (ValidationHelper.ContainsDangerousContent(username))
+        {
+            throw new ArgumentException("Username contains invalid characters or patterns.");
+        }
+
         if (UsernameExists(username))
         {
             throw new InvalidOperationException("Username already exists.");
@@ -40,8 +71,8 @@ public class AuthService : IAuthService
             newUser = new Administrator
             {
                 Id = _dataStore.GetNextUserId(),
-                Username = username,
-                Email = email,
+                Username = username.Trim(),
+                Email = email.Trim().ToLower(),
                 Password = password
             };
         }
@@ -50,8 +81,8 @@ public class AuthService : IAuthService
             newUser = new Customer
             {
                 Id = _dataStore.GetNextUserId(),
-                Username = username,
-                Email = email,
+                Username = username.Trim(),
+                Email = email.Trim().ToLower(),
                 Password = password,
                 WalletBalance = 0
             };

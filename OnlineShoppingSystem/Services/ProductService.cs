@@ -47,9 +47,24 @@ public class ProductService : IProductService
             throw new ArgumentException("Product name is required.");
         }
 
+        if (name.Length > 100)
+        {
+            throw new ArgumentException("Product name cannot exceed 100 characters.");
+        }
+
+        if (description != null && description.Length > 500)
+        {
+            throw new ArgumentException("Description cannot exceed 500 characters.");
+        }
+
         if (price <= 0)
         {
             throw new ArgumentException("Price must be greater than zero.");
+        }
+
+        if (price > 1000000)
+        {
+            throw new ArgumentException("Price cannot exceed R1,000,000.");
         }
 
         if (stockQuantity < 0)
@@ -57,14 +72,24 @@ public class ProductService : IProductService
             throw new ArgumentException("Stock quantity cannot be negative.");
         }
 
+        if (stockQuantity > 1000000)
+        {
+            throw new ArgumentException("Stock quantity cannot exceed 1,000,000 units.");
+        }
+
+        if (category != null && category.Length > 50)
+        {
+            throw new ArgumentException("Category name cannot exceed 50 characters.");
+        }
+
         var product = new Product
         {
             Id = _dataStore.GetNextProductId(),
-            Name = name,
-            Description = description,
+            Name = name.Trim(),
+            Description = description?.Trim() ?? string.Empty,
             Price = price,
             StockQuantity = stockQuantity,
-            Category = category
+            Category = category?.Trim() ?? string.Empty
         };
 
         _dataStore.Products.Add(product);
@@ -84,9 +109,24 @@ public class ProductService : IProductService
             throw new ArgumentException("Product name is required.");
         }
 
+        if (name.Length > 100)
+        {
+            throw new ArgumentException("Product name cannot exceed 100 characters.");
+        }
+
+        if (description != null && description.Length > 500)
+        {
+            throw new ArgumentException("Description cannot exceed 500 characters.");
+        }
+
         if (price <= 0)
         {
             throw new ArgumentException("Price must be greater than zero.");
+        }
+
+        if (price > 1000000)
+        {
+            throw new ArgumentException("Price cannot exceed R1,000,000.");
         }
 
         if (stockQuantity < 0)
@@ -94,11 +134,21 @@ public class ProductService : IProductService
             throw new ArgumentException("Stock quantity cannot be negative.");
         }
 
-        product.Name = name;
-        product.Description = description;
+        if (stockQuantity > 1000000)
+        {
+            throw new ArgumentException("Stock quantity cannot exceed 1,000,000 units.");
+        }
+
+        if (category != null && category.Length > 50)
+        {
+            throw new ArgumentException("Category name cannot exceed 50 characters.");
+        }
+
+        product.Name = name.Trim();
+        product.Description = description?.Trim() ?? string.Empty;
         product.Price = price;
         product.StockQuantity = stockQuantity;
-        product.Category = category;
+        product.Category = category?.Trim() ?? string.Empty;
 
         return true;
     }

@@ -47,6 +47,66 @@ public static class ValidationHelper
     /// </summary>
     public static bool IsValidRating(int rating)
     {
-        return rating >= 1 && rating <= 5;
+        return rating >= ValidationConstants.MinRating && rating <= ValidationConstants.MaxRating;
+    }
+
+    /// <summary>
+    /// Validate string length
+    /// </summary>
+    public static bool IsValidLength(string value, int maxLength)
+    {
+        return !string.IsNullOrEmpty(value) && value.Length <= maxLength;
+    }
+
+    /// <summary>
+    /// Sanitize string input by removing potentially dangerous characters
+    /// </summary>
+    public static string SanitizeInput(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return string.Empty;
+        }
+
+        // Remove HTML/script tags patterns
+        var sanitized = input
+            .Replace("<", "")
+            .Replace(">", "")
+            .Replace("script", "")
+            .Replace("javascript:", "")
+            .Replace("onerror", "")
+            .Replace("onclick", "");
+
+        // Remove SQL injection patterns
+        sanitized = sanitized
+            .Replace("--", "")
+            .Replace("';", "'")
+            .Replace("\";", "\"")
+            .Replace("DROP", "")
+            .Replace("DELETE", "")
+            .Replace("UPDATE", "")
+            .Replace("INSERT", "");
+
+        return sanitized.Trim();
+    }
+
+    /// <summary>
+    /// Check if string contains potentially dangerous content
+    /// </summary>
+    public static bool ContainsDangerousContent(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return false;
+        }
+
+        var dangerous = new[]
+        {
+            "<script", "</script", "javascript:", "onerror=", "onclick=",
+            "DROP TABLE", "DELETE FROM", "';--", "\";--", "1=1", "OR 1=1"
+        };
+
+        var lowerInput = input.ToLower();
+        return dangerous.Any(pattern => lowerInput.Contains(pattern.ToLower()));
     }
 }

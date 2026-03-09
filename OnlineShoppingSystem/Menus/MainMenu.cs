@@ -1,3 +1,4 @@
+using OnlineShoppingSystem.Factories;
 using OnlineShoppingSystem.Helpers;
 using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
@@ -227,43 +228,29 @@ public class MainMenu
             // Login successful
             ConsoleHelper.DisplaySuccess($"Welcome, {user.Username}!");
 
-            // Route to appropriate menu based on user role
-            if (user.Role == UserRole.Customer)
+            // Use Factory Pattern to create the appropriate menu based on user role
+            var menu = MenuFactory.CreateMenu(
+                user,
+                _productService,
+                _cartService,
+                _orderService,
+                _paymentService,
+                _reviewService,
+                _reportService,
+                _persistenceService);
+
+            // Show the menu
+            if (menu is CustomerMenu customerMenu)
             {
-                var customer = user as Customer;
-                if (customer != null)
-                {
-                    var customerMenu = new CustomerMenu(
-                        customer,
-                        _productService,
-                        _cartService,
-                        _orderService,
-                        _paymentService,
-                        _reviewService,
-                        _persistenceService);
-                    customerMenu.Show();
-                    
-                    // Save data after logout
-                    _persistenceService.SaveData();
-                }
+                customerMenu.Show();
             }
-            else if (user.Role == UserRole.Administrator)
+            else if (menu is AdministratorMenu adminMenu)
             {
-                var admin = user as Administrator;
-                if (admin != null)
-                {
-                    var adminMenu = new AdministratorMenu(
-                        admin,
-                        _productService,
-                        _orderService,
-                        _reportService,
-                        _persistenceService);
-                    adminMenu.Show();
-                    
-                    // Save data after logout
-                    _persistenceService.SaveData();
-                }
+                adminMenu.Show();
             }
+
+            // Save data after logout
+            _persistenceService.SaveData();
         }
         catch (Exception ex)
         {

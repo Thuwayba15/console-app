@@ -1,3 +1,4 @@
+using OnlineShoppingSystem.Factories;
 using OnlineShoppingSystem.Models;
 using OnlineShoppingSystem.Enums;
 
@@ -15,27 +16,12 @@ public static class SeedData
     {
         var dataStore = AppDataStore.Instance;
 
-        // Create admin user
-        var admin = new Administrator
-        {
-            Id = dataStore.GetNextUserId(),
-            Username = "admin",
-            Email = "admin@shop.com",
-            Password = "admin123",
-            CreatedAt = DateTime.Now
-        };
+        // Use Factory Pattern to create admin user
+        var admin = UserFactory.CreateUser("admin", "admin@shop.com", "admin123", UserRole.Administrator);
         dataStore.Users.Add(admin);
 
-        // Create customer user
-        var customer = new Customer
-        {
-            Id = dataStore.GetNextUserId(),
-            Username = "customer1",
-            Email = "customer1@email.com",
-            Password = "customer123",
-            WalletBalance = 500.00m,
-            CreatedAt = DateTime.Now
-        };
+        // Use Factory Pattern to create customer with initial balance
+        var customer = UserFactory.CreateCustomerWithBalance("customer1", "customer1@email.com", "customer123", 500.00m);
         dataStore.Users.Add(customer);
 
         // Create sample products

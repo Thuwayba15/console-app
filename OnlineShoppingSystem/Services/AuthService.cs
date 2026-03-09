@@ -1,4 +1,5 @@
 using OnlineShoppingSystem.Data;
+using OnlineShoppingSystem.Factories;
 using OnlineShoppingSystem.Helpers;
 using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
@@ -65,33 +66,17 @@ public class AuthService : IAuthService
             throw new InvalidOperationException("Email already exists.");
         }
 
-        User newUser;
-        if (isAdmin)
-        {
-            newUser = new Administrator
-            {
-                Id = _dataStore.GetNextUserId(),
-                Username = username.Trim(),
-                Email = email.Trim().ToLower(),
-                Password = password
-            };
-        }
-        else
-        {
-            newUser = new Customer
-            {
-                Id = _dataStore.GetNextUserId(),
-                Username = username.Trim(),
-                Email = email.Trim().ToLower(),
-                Password = password,
-                WalletBalance = 0
-            };
+        // Use Factory Pattern to create the appropriate user type
+        var role = isAdmin ? UserRole.Administrator : UserRole.Customer;
+        var newUser = UserFactory.CreateUser(username, email, password, role);
 
-            // Create a cart for the new customer
+        // Create a cart for new customers
+        if (newUser is Customer customer)
+        {
             var cart = new Cart
             {
                 Id = _dataStore.GetNextCartId(),
-                CustomerId = newUser.Id
+                CustomerId = customer.Id
             };
             _dataStore.Carts.Add(cart);
         }

@@ -73,18 +73,76 @@ public class CustomerMenu
         while (true)
         {
             ConsoleHelper.DisplayHeader($"CUSTOMER MENU - Welcome, {_customer.Username}!");
-            Console.WriteLine("1. Browse Products");
-            Console.WriteLine("2. Search Products");
-            Console.WriteLine("3. Add Product to Cart");
-            Console.WriteLine("4. View Cart");
-            Console.WriteLine("5. Update Cart");
-            Console.WriteLine("6. Checkout");
-            Console.WriteLine("7. View Wallet Balance");
-            Console.WriteLine("8. Add Wallet Funds");
-            Console.WriteLine("9. View Order History");
-            Console.WriteLine("10. Track Orders");
-            Console.WriteLine("11. Review Products");
-            Console.WriteLine("12. Logout");
+            
+            // Shopping Section
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n[SHOPPING]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("1. ");
+            Console.ResetColor();
+            Console.WriteLine("Browse Products");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("2. ");
+            Console.ResetColor();
+            Console.WriteLine("Search Products");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("3. ");
+            Console.ResetColor();
+            Console.WriteLine("Add Product to Cart");
+            
+            // Cart Section
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\n[CART]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("4. ");
+            Console.ResetColor();
+            Console.WriteLine("View Cart");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("5. ");
+            Console.ResetColor();
+            Console.WriteLine("Update Cart");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("6. ");
+            Console.ResetColor();
+            Console.WriteLine("Checkout");
+            
+            // Wallet Section
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n[WALLET]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("7. ");
+            Console.ResetColor();
+            Console.WriteLine("View Wallet Balance");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("8. ");
+            Console.ResetColor();
+            Console.WriteLine("Add Wallet Funds");
+            
+            // Orders Section
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("\n[ORDERS]");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("9. ");
+            Console.ResetColor();
+            Console.WriteLine("View Order History");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("10. ");
+            Console.ResetColor();
+            Console.WriteLine("Track Orders");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("11. ");
+            Console.ResetColor();
+            Console.WriteLine("Review Products");
+            
+            // Logout
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("\n12. ");
+            Console.ResetColor();
+            Console.WriteLine("Logout");
 
             var choice = InputHelper.ReadMenuChoice(1, 12);
 

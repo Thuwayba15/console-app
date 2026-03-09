@@ -7,8 +7,28 @@ using OnlineShoppingSystem.Models;
 namespace OnlineShoppingSystem.Menus;
 
 /// <summary>
-/// Customer menu using Command Pattern for menu actions
-/// Each menu option is encapsulated as a command object
+/// Customer menu implementing Command Pattern
+/// 
+/// Architecture:
+/// -------------
+/// This menu demonstrates the Command Pattern where each menu action is
+/// encapsulated as an ICommand object. This provides several benefits:
+/// 
+/// 1. Single Responsibility - Each command class handles one specific action
+/// 2. Open/Closed Principle - Add new features by creating new command classes
+/// 3. Testability - Commands can be tested independently
+/// 4. Maintainability - Menu class stays small and focused on routing
+/// 
+/// The menu acts as an "invoker" that stores commands in a dictionary
+/// and executes them based on user choice. Commands are "receivers" that
+/// contain the actual business logic.
+/// 
+/// Adding a new menu option:
+/// 1. Create a new command class implementing ICommand
+/// 2. Register it in the _commands dictionary
+/// 3. Add the menu option to Show() method
+/// 
+/// No modifications to existing commands or business logic required!
 /// </summary>
 public class CustomerMenu
 {
@@ -27,6 +47,7 @@ public class CustomerMenu
         _customer = customer;
 
         // Command Pattern: Register all menu commands
+        // Each command is independent and self-contained
         _commands = new Dictionary<int, ICommand>
         {
             { 1, new BrowseProductsCommand(productService) },

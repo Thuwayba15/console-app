@@ -1,8 +1,13 @@
 using OnlineShoppingSystem.Helpers;
 using OnlineShoppingSystem.Interfaces;
+using OnlineShoppingSystem.Validators;
 
 namespace OnlineShoppingSystem.Commands.Admin;
 
+/// <summary>
+/// Command for updating product details
+/// Uses ProductValidator for consistent validation
+/// </summary>
 public class UpdateProductCommand : ICommand
 {
     private readonly IProductService _productService;
@@ -44,17 +49,68 @@ public class UpdateProductCommand : ICommand
             Console.WriteLine($"\nCurrent: {product.Name} - R{product.Price:F2}");
             Console.WriteLine("Enter new values (press Enter to keep current):");
             
-            var name = InputHelper.ReadString($"Name [{product.Name}]: ");
-            if (string.IsNullOrWhiteSpace(name)) name = product.Name;
+            // Get name (validate if changed)
+            var nameInput = InputHelper.ReadString($"Name [{product.Name}]: ");
+            var name = string.IsNullOrWhiteSpace(nameInput) ? product.Name : nameInput;
+            if (!string.IsNullOrWhiteSpace(nameInput))
+            {
+                var nameValidation = ProductValidator.ValidateName(name);
+                if (!nameValidation.IsValid)
+                {
+                    ConsoleHelper.DisplayError(nameValidation.ErrorMessage);
+                    ConsoleHelper.PauseForUser();
+                    return;
+                }
+            }
             
-            var desc = InputHelper.ReadString($"Description [{product.Description}]: ");
-            if (string.IsNullOrWhiteSpace(desc)) desc = product.Description;
+            // Get description (validate if changed)
+            var descInput = InputHelper.ReadString($"Description [{product.Description}]: ");
+            var desc = string.IsNullOrWhiteSpace(descInput) ? product.Description : descInput;
+            if (!string.IsNullOrWhiteSpace(descInput))
+            {
+                var descValidation = ProductValidator.ValidateDescription(desc);
+                if (!descValidation.IsValid)
+                {
+                    ConsoleHelper.DisplayError(descValidation.ErrorMessage);
+                    ConsoleHelper.PauseForUser();
+                    return;
+                }
+            }
             
+            // Get price (validate if changed)
             var priceStr = InputHelper.ReadString($"Price [R{product.Price:F2}]: ");
-            var price = string.IsNullOrWhiteSpace(priceStr) ? product.Price : decimal.Parse(priceStr);
+            var price = product.Price;
+            if (!string.IsNullOrWhiteSpace(priceStr))
+            {
+                if (!decimal.TryParse(priceStr, out price))
+                {
+                    ConsoleHelper.DisplayError("Invalid price format.");
+                    ConsoleHelper.PauseForUser();
+                    return;
+                }
+                
+                var priceValidation = ProductValidator.ValidatePrice(price);
+                if (!priceValidation.IsValid)
+                {
+                    ConsoleHelper.DisplayError(priceValidation.ErrorMessage);
+                    ConsoleHelper.PauseForUser();
+                    return;
+                }
+            }
             
-            var category = InputHelper.ReadString($"Category [{product.Category}]: ");
-            if (string.IsNullOrWhiteSpace(category)) category = product.Category;
+            // Get category (validate if changed)
+            var categoryInput = InputHelper.ReadString($"Category [{product.Category}]: ");
+            var category = string.IsNullOrWhiteSpace(categoryInput) ? product.Category : categoryInput;
+            if (!string.IsNullOrWhiteSpace(categoryInput))
+            {
+                var categoryValidation = ProductValidator.ValidateCategory(category);
+                if (!categoryValidation.IsValid)
+                {
+                    ConsoleHelper.DisplayError(categoryValidation.ErrorMessage);
+                    ConsoleHelper.PauseForUser();
+                    return;
+                }
+            }
 
             var success = _productService.UpdateProduct(productId, name, desc, price, product.StockQuantity, category);
 

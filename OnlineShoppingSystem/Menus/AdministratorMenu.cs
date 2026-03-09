@@ -10,8 +10,23 @@ using OnlineShoppingSystem.Strategies;
 namespace OnlineShoppingSystem.Menus;
 
 /// <summary>
-/// Administrator menu using Command Pattern for menu actions
-/// Each menu option is encapsulated as a command object
+/// Administrator menu implementing Command Pattern
+/// 
+/// Architecture:
+/// -------------
+/// Similar to CustomerMenu, this class uses the Command Pattern to
+/// encapsulate administrative actions as command objects.
+/// 
+/// Benefits:
+/// - Separation of concerns (menu routing vs. business logic)
+/// - Easy to add new admin features
+/// - Commands are testable in isolation
+/// - Reduced menu class size (from 700+ lines to 73 lines)
+/// 
+/// Design Pattern Integration:
+/// - Command Pattern: Menu actions as commands
+/// - Strategy Pattern: Report generation (see GenerateReportsCommand)
+/// - Factory Pattern: Menu created by MenuFactory
 /// </summary>
 public class AdministratorMenu
 {
@@ -27,7 +42,7 @@ public class AdministratorMenu
     {
         _admin = admin;
 
-        // Command Pattern: Register all menu commands
+        // Command Pattern: Register all administrative commands
         _commands = new Dictionary<int, ICommand>
         {
             { 1, new AddProductCommand(productService, persistenceService) },

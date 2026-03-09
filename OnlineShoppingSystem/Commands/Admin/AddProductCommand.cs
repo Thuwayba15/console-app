@@ -1,11 +1,13 @@
 using OnlineShoppingSystem.Helpers;
 using OnlineShoppingSystem.Interfaces;
 using OnlineShoppingSystem.Models;
+using OnlineShoppingSystem.Validators;
 
 namespace OnlineShoppingSystem.Commands.Admin;
 
 /// <summary>
 /// Command for adding a new product to the catalog
+/// Uses ProductValidator for consistent validation
 /// </summary>
 public class AddProductCommand : ICommand
 {
@@ -24,46 +26,57 @@ public class AddProductCommand : ICommand
 
         try
         {
+            // Get and validate product name
             var name = InputHelper.ReadNonEmptyString("Enter product name: ");
-            if (name.Length > ValidationConstants.MaxProductNameLength || ValidationHelper.ContainsDangerousContent(name))
+            var nameValidation = ProductValidator.ValidateName(name);
+            if (!nameValidation.IsValid)
             {
-                ConsoleHelper.DisplayError("Invalid product name.");
+                ConsoleHelper.DisplayError(nameValidation.ErrorMessage);
                 ConsoleHelper.PauseForUser();
                 return;
             }
 
+            // Get and validate product description
             var description = InputHelper.ReadNonEmptyString("Enter product description: ");
-            if (description.Length > ValidationConstants.MaxDescriptionLength || ValidationHelper.ContainsDangerousContent(description))
+            var descValidation = ProductValidator.ValidateDescription(description);
+            if (!descValidation.IsValid)
             {
-                ConsoleHelper.DisplayError("Invalid description.");
+                ConsoleHelper.DisplayError(descValidation.ErrorMessage);
                 ConsoleHelper.PauseForUser();
                 return;
             }
 
+            // Get and validate price
             var price = InputHelper.ReadPositiveDecimal("Enter product price: R");
-            if (price > ValidationConstants.MaxPrice)
+            var priceValidation = ProductValidator.ValidatePrice(price);
+            if (!priceValidation.IsValid)
             {
-                ConsoleHelper.DisplayError(ValidationConstants.PriceTooHigh);
+                ConsoleHelper.DisplayError(priceValidation.ErrorMessage);
                 ConsoleHelper.PauseForUser();
                 return;
             }
 
+            // Get and validate stock quantity
             var stockQuantity = InputHelper.ReadPositiveInt("Enter initial stock quantity: ");
-            if (stockQuantity > ValidationConstants.MaxStockQuantity)
+            var stockValidation = ProductValidator.ValidateStockQuantity(stockQuantity);
+            if (!stockValidation.IsValid)
             {
-                ConsoleHelper.DisplayError(ValidationConstants.StockTooHigh);
+                ConsoleHelper.DisplayError(stockValidation.ErrorMessage);
                 ConsoleHelper.PauseForUser();
                 return;
             }
 
+            // Get and validate category
             var category = InputHelper.ReadNonEmptyString("Enter product category: ");
-            if (category.Length > ValidationConstants.MaxCategoryLength || ValidationHelper.ContainsDangerousContent(category))
+            var categoryValidation = ProductValidator.ValidateCategory(category);
+            if (!categoryValidation.IsValid)
             {
-                ConsoleHelper.DisplayError("Invalid category.");
+                ConsoleHelper.DisplayError(categoryValidation.ErrorMessage);
                 ConsoleHelper.PauseForUser();
                 return;
             }
 
+            // Add product
             var product = _productService.AddProduct(name, description, price, stockQuantity, category);
 
             if (product != null)
